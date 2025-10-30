@@ -8,28 +8,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Upload Your File</h1>
-        <form action="#" method="post" enctype="multipart/form-data" class="upload-form">
-            <div class="file-input-wrapper">
-                <input type="file" id="file-upload" name="uploaded_file" class="hidden-input">
-                <label for="file-upload" class="custom-file-button">Choose File</label>
-                <span id="file-name" class="selected-file-name">No file chosen</span>
-            </div>
-            <button type="submit" class="submit-button">Upload</button>
+        <h1>Upload Your Files</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" id="fileInput" multiple>
+            <button type="submit">Upload</button>
         </form>
+        <div id="uploadStatus"></div>
     </div>
-
-    <script>
-        const fileInput = document.getElementById('file-upload');
-        const fileNameSpan = document.getElementById('file-name');
-
-        fileInput.addEventListener('change', (event) => {
-            if (event.target.files.length > 0) {
-                fileNameSpan.textContent = event.target.files[0].name;
-            } else {
-                fileNameSpan.textContent = 'No file chosen';
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
