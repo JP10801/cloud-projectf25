@@ -1,8 +1,8 @@
 // This is a simplified example. In a real application, the SAS token
 // should be securely obtained (e.g., from a backend API).
-const sasToken = "YOUR_SAS_TOKEN_HERE"; // Replace with your actual SAS token
-const storageAccountName = "YOUR_STORAGE_ACCOUNT_NAME"; // Replace with your storage account name
-const containerName = "YOUR_CONTAINER_NAME"; // Replace with your container name
+const sasToken = "sp=r&st=2025-10-30T02:52:56Z&se=2026-01-01T12:07:56Z&spr=https&sv=2024-11-04&sr=c&sig=K4rSvUMkECW%2F8u8oVwYwbO5OUb5HphPjveksyoBiBWI%3D"; // Replace with your actual SAS token
+const storageAccountName = "cproject1"; // Replace with your storage account name
+const containerName = "$logs"; // Replace with your container name
 
 const uploadForm = document.getElementById('uploadForm');
 const fileInput = document.getElementById('fileInput');
@@ -22,9 +22,9 @@ uploadForm.addEventListener('submit', async (e) => {
     try {
         for (const file of files) {
             const blobServiceClient = new Azure.Storage.Blob.BlobServiceClient(
-                `https://${storageAccountName}.blob.core.windows.net?${sasToken}`
+                `https://${cproject1}.blob.core.windows.net?${sp=r&st=2025-10-30T02:52:56Z&se=2026-01-01T12:07:56Z&spr=https&sv=2024-11-04&sr=c&sig=K4rSvUMkECW%2F8u8oVwYwbO5OUb5HphPjveksyoBiBWI%3D}`
             );
-            const containerClient = blobServiceClient.getContainerClient(containerName);
+            const containerClient = blobServiceClient.getContainerClient($logs);
             const blockBlobClient = containerClient.getBlockBlobClient(file.name);
 
             await blockBlobClient.uploadBrowserData(file);
