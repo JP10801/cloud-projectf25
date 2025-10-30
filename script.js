@@ -1,10 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/@azure/storage-blob@latest"></script>
-<form id="uploadForm">
-  <input type="file" id="fileInput" multiple>
-  <button type="submit">Upload</button>
-</form>
-<pre id="uploadStatus"></pre>
-
 <script>
 const sasToken = "sp=racwdl&st=2025-10-30T03:17:54Z&se=2026-01-01T12:32:54Z&spr=https&sv=2024-11-04&sr=c&sig=6RxjF6PpDbMMfZPlADvL%2BZ%2BpvKxAaCvzV8DYDMlFsys%3D"; 
 const storageAccountName = "cproject1"; 
