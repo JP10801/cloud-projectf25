@@ -1,8 +1,14 @@
-// This is a simplified example. In a real application, the SAS token
-// should be securely obtained (e.g., from a backend API).
-const sasToken = "sp=r&st=2025-10-30T02:52:56Z&se=2026-01-01T12:07:56Z&spr=https&sv=2024-11-04&sr=c&sig=K4rSvUMkECW%2F8u8oVwYwbO5OUb5HphPjveksyoBiBWI%3D"; // Replace with your actual SAS token
-const storageAccountName = "cproject1"; // Replace with your storage account name
-const containerName = "$logs"; // Replace with your container name
+<script src="https://cdn.jsdelivr.net/npm/@azure/storage-blob@latest"></script>
+<form id="uploadForm">
+  <input type="file" id="fileInput" multiple>
+  <button type="submit">Upload</button>
+</form>
+<pre id="uploadStatus"></pre>
+
+<script>
+const sasToken = "sp=racwdl&st=2025-10-30T03:17:54Z&se=2026-01-01T12:32:54Z&spr=https&sv=2024-11-04&sr=c&sig=6RxjF6PpDbMMfZPlADvL%2BZ%2BpvKxAaCvzV8DYDMlFsys%3D"; 
+const storageAccountName = "cproject1"; 
+const containerName = "uploads"; // ⚠️ Use your actual writable container
 
 const uploadForm = document.getElementById('uploadForm');
 const fileInput = document.getElementById('fileInput');
@@ -17,22 +23,23 @@ uploadForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    uploadStatus.textContent = "Uploading...";
+    uploadStatus.textContent = "Uploading...\n";
 
     try {
-        for (const file of files) {
-            const blobServiceClient = new Azure.Storage.Blob.BlobServiceClient(
-                `https://${cproject1}.blob.core.windows.net?${sp=r&st=2025-10-30T02:52:56Z&se=2026-01-01T12:07:56Z&spr=https&sv=2024-11-04&sr=c&sig=K4rSvUMkECW%2F8u8oVwYwbO5OUb5HphPjveksyoBiBWI%3D}`
-            );
-            const containerClient = blobServiceClient.getContainerClient($logs);
-            const blockBlobClient = containerClient.getBlockBlobClient(file.name);
+        const blobServiceClient = new Azure.Storage.Blob.BlobServiceClient(
+            `https://${storageAccountName}.blob.core.windows.net?${sasToken}`
+        );
+        const containerClient = blobServiceClient.getContainerClient(containerName);
 
+        for (const file of files) {
+            const blockBlobClient = containerClient.getBlockBlobClient(file.name);
             await blockBlobClient.uploadBrowserData(file);
-            uploadStatus.textContent += `\nUploaded: ${file.name}`;
+            uploadStatus.textContent += `Uploaded: ${file.name}\n`;
         }
-        uploadStatus.textContent += "\nAll files uploaded successfully!";
+        uploadStatus.textContent += "All files uploaded successfully!";
     } catch (error) {
         console.error(error);
         uploadStatus.textContent = `Upload failed: ${error.message}`;
     }
 });
+</script>
