@@ -18,7 +18,7 @@ uploadForm.addEventListener('submit', async (e) => {
     uploadStatus.textContent = "Uploading...\n";
 
     try {
-        const blobServiceClient = new Azure.Storage.Blob.BlobServiceClient(
+       const blobServiceClient = new AzureStorageBlob.BlobServiceClient(
             `https://${storageAccountName}.blob.core.windows.net?${sasToken}`
         );
         const containerClient = blobServiceClient.getContainerClient(containerName);
