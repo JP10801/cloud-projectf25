@@ -1,1 +1,27 @@
+<input type="file" id="fileInput" multiple />
+<div id="status"></div>
+<script>
+async function uploadFile(file) {
+  // Request SAS URL from your Azure Function
+  const response = await fetch(`/api/getUploadUrl?filename=${encodeURIComponent(file.name)}`);
+  const { uploadUrl } = await response.json();
+
+  // Upload file to blob storage
+  const uploadResp = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'x-ms-blob-type': 'BlockBlob' },
+    body: file
+  });
+
+  if (uploadResp.ok) {
+    document.getElementById('status').innerText = `${file.name} uploaded successfully.`;
+  } else {
+    document.getElementById('status').innerText = `${file.name} upload failed.`;
+  }
+}
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  for (const file of e.target.files) uploadFile(file);
+});
+</script>
 
