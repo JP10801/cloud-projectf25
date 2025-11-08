@@ -1,38 +1,29 @@
-import { BlobServiceClient } from "@azure/storage-blob";
+import { BlobServiceClient, generateBlobSASQueryParameters, BlobSASPermissions, SASProtocol, StorageSharedKeyCredential } from "@azure/storage-blob";
+import { v4 as uuidv4 } from "uuid";
 
+export async function handler(req, context) {
+  const filename = req.query.get("filename") || "unnamed";
+  const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
+  const containerName = "uploads";
 
-const sasToken = "sp=racwdl&st=2025-10-30T03:17:54Z&se=2026-01-01T12:32:54Z&spr=https&sv=2024-11-04&sr=c&sig=6RxjF6PpDbMMfZPlADvL%2BZ%2BpvKxAaCvzV8DYDMlFsys%3D"; 
-const storageAccountName = "cproject1"; 
-const containerName = "uploads"; // ⚠️ Use your actual writable container
+  const credentials = new StorageSharedKeyCredential(accountName, accountKey);
+  const blobName = `${uuidv4()}-${filename}`;
 
-const uploadForm = document.getElementById('uploadForm');
-const fileInput = document.getElementById('fileInput');
-const uploadStatus = document.getElementById('uploadStatus');
+  const sas = generateBlobSASQueryParameters({
+    containerName,
+    blobName,
+    permissions: BlobSASPermissions.parse("cw"), // create, write
+    expiresOn: new Date(new Date().valueOf() + 3600 * 1000), // 1 hour
+    protocol: SASProtocol.Https,
+  }, credentials).toString();
 
-uploadForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  const uploadUrl = `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}?${sas}`;
 
-    const files = fileInput.files;
-    if (files.length === 0) {
-        uploadStatus.textContent = "Please select files to upload.";
-        return;
-    }
+  return {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ uploadUrl, blobName })
+  };
+}
 
-    uploadStatus.textContent = "Uploading...\n";
-
-    try {
-     const blobServiceClient = new BlobServiceClient(`https://${storageAccountName}.blob.core.windows.net?${sasToken}`);
-        
-        const containerClient = blobServiceClient.getContainerClient(containerName);
-
-        for (const file of files) {
-            const blockBlobClient = containerClient.getBlockBlobClient(file.name);
-            await blockBlobClient.uploadBrowserData(file);
-            uploadStatus.textContent += `Uploaded: ${file.name}\n`;
-        }
-        uploadStatus.textContent += "All files uploaded successfully!";
-    } catch (error) {
-        console.error(error);
-        uploadStatus.textContent = `Upload failed: ${error.message}`;
-    }
-});
