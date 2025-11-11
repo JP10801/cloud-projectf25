@@ -15,25 +15,7 @@
     </div>
     <!-- End Loader -->
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">
-            <p href="#home" >File <span>Sync</span></p>
-        </div>
-        <div class="menu-toggle">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        <ul class="underline">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-        <button class="user">Login/Signup</button>
-    </nav>
-    <!-- End Navbar -->
+
 
     <!-- Main Banner -->
     <section class="main-banner" id="home">
@@ -73,84 +55,53 @@
     </section>
     <!-- End About Section -->
 
-    <!-- Pricing Section -->
-    <section class="pricing-banner" id="pricing">
-        <div class="pricing-container">
-            <h2>Our Pricing</h2>
-            <div class="pricing-cards">
-                <div class="pricing-card">
-                    <h3>Basic Plan</h3>
-                    <p class="price">$19/month</p>
-                    <ul>
-                        <li>5GB Storage</li>
-                        <li>10 Users</li>
-                        <li>Email Support</li>
-                    </ul>
-                    <button class="buy-button">Buy Now</button>
-                    <div class="details">
-                        <p>Additional Details:</p>
-                        <ul>
-                            <li>Access to Basic Features</li>
-                            <li>24/7 Customer Support</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="pricing-card">
-                    <h3>Standard Plan</h3>
-                    <p class="price">$39/month</p>
-                    <ul>
-                        <li>10GB Storage</li>
-                        <li>20 Users</li>
-                        <li>Email & Phone Support</li>
-                    </ul>
-                    <button class="buy-button">Buy Now</button>
-                    <div class="details">
-                        <p>Additional Details:</p>
-                        <ul>
-                            <li>Access to Standard Features</li>
-                            <li>Priority Customer Support</li>
-                        </ul>
-                    </div>
-                </div>
+<!-- === File Upload ===
+Design a file upload element. Is it the loading screen and icon? A progress element? Are folders being uploaded by flying across the screen like Ghostbusters? ;)  
+-->
 
-                <div class="pricing-card">
-                    <h3>Premium Plan</h3>
-                    <p class="price">$79/month</p>
-                    <ul>
-                        <li>50GB Storage</li>
-                        <li>50 Users</li>
-                        <li>Email, Phone & Chat Support</li>
-                    </ul>
-                    <button class="buy-button">Buy Now</button>
-                    <div class="details">
-                        <p>Additional Details:</p>
-                        <ul>
-                            <li>Access to Premium Features</li>
-                            <li>24/7 Customer Support</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <span class="arrow-left">&#9664;</span>
-            <span class="arrow-right">&#9654;</span>
+<div id="FileUpload">
+  <div class="wrapper">
+    <div class="upload">
+      <p>Drag files here or <span class="upload__button">Browse</span></p>
+    </div>
+    <div class="uploaded uploaded--one">
+      <i class="far fa-file-pdf"></i>
+      <div class="file">
+        <div class="file__name">
+          <p>lorem_ipsum.pdf</p>
+          <i class="fas fa-times"></i>
         </div>
-    </section>
-    <!-- End Pricing Section -->
-
-    <!-- Contact Section -->
-    <section class="contact-banner" id="contact">
-        <div class="contact-container">
-            <h2>Contact Us</h2>
-            <p>Get in touch with our team.</p>
-            <form class="contact-form">
-                <input type="text" placeholder="Your Name">
-                <input type="email" placeholder="Your Email">
-                <textarea placeholder="Your Message"></textarea>
-                <button class="cta-button">Send Message</button>
-            </form>
+        <div class="progress">
+          <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:100%"></div>
         </div>
-    </section>
-    <!-- End Contact Section -->
+      </div>
+    </div>
+    <div class="uploaded uploaded--two">
+      <i class="far fa-file-pdf"></i>
+      <div class="file">
+        <div class="file__name">
+          <p>dolor_sit.pdf</p>
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="progress">
+          <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:80%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="uploaded uploaded--three">
+      <i class="far fa-file-pdf"></i>
+      <div class="file">
+        <div class="file__name">
+          <p>amet_consectetur.pdf</p>
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="progress">
+          <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width:60%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -159,25 +110,8 @@
                 <div class="footer-logo">
                     <p>File <span>Sync</span></p>
                 </div>
-                <div class="footer-links">
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-social">
-                    <p>Follow Us:</p>
-                    <ul>
-                        <li><a href="#"><i class="fab fa-facebook"></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="end">&copy 2023. All Rights reserved</div>
-            <div class="end">Made with ❤ by Mustafa</div>
+            <div class="end">&copy 2025. All Rights reserved</div>
+            <div class="end">Joshua Pineda, Cordell Yuen, Sabrina Mandla</div>
         </div>
     </footer>
     <!-- End Footer -->
@@ -299,3 +233,4 @@
 </body>
 
 </html>
+
