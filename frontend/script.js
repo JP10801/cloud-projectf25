@@ -1,13 +1,13 @@
-// ✅ Replace this SAS URL with your real container SAS URL
+// ✅ Replace this SAS URL with your actual container SAS URL
 const AZURE_CONTAINER_SAS_URL =
   "https://cproject1.blob.core.windows.net/uploads?sp=racwdl&st=2025-11-12T19:05:48Z&se=2026-01-02T03:20:48Z&spr=https&sv=2024-11-04&sr=c&sig=8QUeNMzodMpH6tYgL6VVIzIk%2B4uymfPfbRIXqjDzjB0%3D";
 
-// ✅ Grab references to HTML elements
+// === DOM References ===
 const fileInput = document.getElementById("file");
 const fileUploadLabel = document.getElementById("fileUploadLabel");
 const filesUploadedContainer = document.getElementById("filesUploaded");
 
-// === Drag & Drop Setup ===
+// === Drag & Drop Events ===
 fileUploadLabel.addEventListener("dragover", (e) => {
   e.preventDefault();
   fileUploadLabel.classList.add("drag-over");
@@ -20,14 +20,11 @@ fileUploadLabel.addEventListener("dragleave", () => {
 fileUploadLabel.addEventListener("drop", (e) => {
   e.preventDefault();
   fileUploadLabel.classList.remove("drag-over");
-  const files = e.dataTransfer.files;
-  handleFiles(files);
+  handleFiles(e.dataTransfer.files);
 });
 
-fileInput.addEventListener("change", () => {
-  const files = fileInput.files;
-  handleFiles(files);
-});
+// === File Input Event ===
+fileInput.addEventListener("change", () => handleFiles(fileInput.files));
 
 // === Main Handler ===
 async function handleFiles(files) {
@@ -37,6 +34,7 @@ async function handleFiles(files) {
     const fileName = truncateFileName(file.name, 10);
     const fileSize = formatFileSize(file.size);
 
+    // Create the file item
     const fileItem = document.createElement("div");
     fileItem.classList.add("file-item");
     fileItem.innerHTML = `
@@ -44,24 +42,27 @@ async function handleFiles(files) {
           <img src="https://img.icons8.com/?size=256&id=11651&format=png" />
           <span class="file-name">${fileName}</span>
           <span class="file-size">${fileSize}</span>
-          <div class="uploaded" id="uploadStatus-${CSS.escape(file.name)}">
+          <div class="uploaded">
               <p>Uploading...</p>
           </div>
       </div>
     `;
+
+    // Append to DOM first
     filesUploadedContainer.appendChild(fileItem);
+
+    // Grab the 'uploaded' div safely
+    const statusDiv = fileItem.querySelector(".uploaded");
 
     try {
       await uploadToAzureContainer(file);
-      document.querySelector(`#uploadStatus-${CSS.escape(file.name)}`).innerHTML = `
+      statusDiv.innerHTML = `
         <img src="https://img.icons8.com/?size=256&id=7690&format=png" />
         <p>Uploaded</p>
       `;
     } catch (err) {
       console.error("Upload failed:", err);
-      document.querySelector(`#uploadStatus-${CSS.escape(file.name)}`).innerHTML = `
-        <p style="color:red;">Failed</p>
-      `;
+      statusDiv.innerHTML = `<p style="color:red;">Failed</p>`;
     }
   }
 }
@@ -98,4 +99,3 @@ function formatFileSize(size) {
   const i = Math.floor(Math.log(size) / Math.log(k));
   return Math.round(100 * (size / Math.pow(k, i))) / 100 + " " + sizes[i];
 }
-
