@@ -80,6 +80,17 @@
 
     <main class="main">
       <header class="main-header">
+                <div class="search-sort">
+          <input id="searchInput" placeholder="Search files..." />
+          <select id="sortSelect">
+            <option value="name">Sort by name (A → Z)</option>
+            <option value="size">Sort by size</option>
+            <option value="created">Sort by creation time</option>
+            <option value="lastAccess">Sort by last access</option>
+          </select>
+          <button id="refreshBtn">Refresh</button>
+        </div>
+          
         <div class="upload-area">
           <label id="fileUploadLabel" class="file-upload-label">
             <div class="file-upload-design">
@@ -94,16 +105,7 @@
           </label>
         </div>
 
-        <div class="search-sort">
-          <input id="searchInput" placeholder="Search files..." />
-          <select id="sortSelect">
-            <option value="name">Sort by name (A → Z)</option>
-            <option value="size">Sort by size</option>
-            <option value="created">Sort by creation time</option>
-            <option value="lastAccess">Sort by last access</option>
-          </select>
-          <button id="refreshBtn">Refresh</button>
-        </div>
+  
       </header>
 
       <section class="content">
@@ -116,5 +118,6 @@
   <script src="./script.js"></script>
 </body>
 </html>
+
 
 
