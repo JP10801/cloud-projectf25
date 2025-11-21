@@ -152,7 +152,10 @@ body { background: linear-gradient(315deg,#d9d9d9 0%,#f6f2f2 74%); min-height:10
 .search-sort input { padding:8px; width:300px; border-radius:6px; border:1px solid #ccc; }
 .search-sort select, .search-sort button { padding:8px; border-radius:6px; border:1px solid #ccc; cursor:pointer; }
 .main { flex:1; display:flex; flex-direction:column; gap:12px;  max-width: 600px; }
-.main-header { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.main-header {     display: flex; 
+    flex-direction: column;  /* stack search bar on top of upload area */
+    align-items: stretch;    /* make children fill width */
+    gap: 12px;               /* space between search and upload area */ }
 .upload-area { flex:1; }
 .file-upload-label { cursor:pointer; background-color:#ffffff; padding:16px 20px; border-radius:12px; border:2px dashed #525252; display:flex; align-items:center; gap:12px; }
 .file-upload-design { display:flex; align-items:center; gap:10px; }
@@ -180,6 +183,7 @@ body { background: linear-gradient(315deg,#d9d9d9 0%,#f6f2f2 74%); min-height:10
   .sidebar { width:100%; height:auto; max-height:300px; }
  
 }
+
 
 
 
