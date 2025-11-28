@@ -129,7 +129,7 @@ body { background: linear-gradient(315deg,#d9d9d9 0%,#f6f2f2 74%); min-height:10
 
 /* SIDEBAR */
 .sidebar {
-  width: 380px;
+  width: 450px;
   background: #fff;
   padding: 18px;
   border-radius: 10px;
@@ -183,6 +183,7 @@ body { background: linear-gradient(315deg,#d9d9d9 0%,#f6f2f2 74%); min-height:10
   .sidebar { width:100%; height:auto; max-height:300px; }
  
 }
+
 
 
 
