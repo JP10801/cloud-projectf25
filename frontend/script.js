@@ -1,6 +1,4 @@
-
 // ========================= CONFIG =========================
-// Put your container SAS url here (must include list permission)
 const AZURE_CONTAINER_SAS_URL = "https://cproject1.blob.core.windows.net/uploads?sp=racwdl&st=2025-11-12T19:05:48Z&se=2026-01-02T03:20:48Z&spr=https&sv=2024-11-04&sr=c&sig=8QUeNMzodMpH6tYgL6VVIzIk%2B4uymfPfbRIXqjDzjB0%3D";
 
 // ========================= DOM refs =========================
@@ -85,17 +83,12 @@ function extensionOf(name) {
   return dot === -1 ? "" : name.substring(dot).toLowerCase();
 }
 
+// NOTE: Changed: do NOT auto-create rules/folders for unknown extensions.
+// Unknown extensions map to "Other" by default. Use the UI to add/update rules.
 function mapFileToFolder(fileName) {
   const ext = extensionOf(fileName);
   if (ext && rules[ext]) return rules[ext];
-  // unknown extension -> create a folder named by extension (without dot) or "Other"
-  if (ext) {
-    const folderName = ext.replace(".", "").toUpperCase();
-    rules[ext] = folderName;
-    saveRules();
-    renderRulesUI();
-    return folderName;
-  }
+  // unknown extension -> put in generic "Other" bucket (do not create rules automatically)
   return "Other";
 }
 
@@ -114,22 +107,30 @@ function initEventHandlers() {
   createFolderBtn.addEventListener("click", async () => {
     const name = (newFolderNameInput.value || "").trim();
     if (!name) return alert("Folder name required");
-    await createFolder(name);
-    newFolderNameInput.value = "";
-    await refreshListing();
-    alert(`Folder "${name}" created`);
+    try {
+      await createFolder(name);
+      newFolderNameInput.value = "";
+      await refreshListing();
+      alert(`Folder "${name}" created`);
+    } catch (err) {
+      console.error("Create folder failed", err);
+      alert("Create folder failed.");
+    }
   });
 
   addRuleBtn.addEventListener("click", () => {
-    const ext = (ruleExtInput.value || "").trim().toLowerCase();
+    const extRaw = (ruleExtInput.value || "").trim().toLowerCase();
     const folder = (ruleFolderInput.value || "").trim();
-    if (!ext || !folder) return alert("Provide extension (e.g. .pdf) and folder name");
-    const key = ext.startsWith(".") ? ext : "." + ext;
+    if (!extRaw || !folder) return alert("Provide extension (e.g. .pdf) and folder name");
+    const key = extRaw.startsWith(".") ? extRaw : "." + extRaw;
     rules[key] = folder;
     saveRules();
     renderRulesUI();
     ruleExtInput.value = "";
     ruleFolderInput.value = "";
+    // ensure the rule folder is visible in folders list immediately
+    folders.add(folder);
+    renderFoldersUI();
   });
 
   searchInput.addEventListener("input", () => renderFilesView());
@@ -196,20 +197,27 @@ async function listBlobs() {
       const contentLength = parseInt(props?.querySelector("Content-Length")?.textContent || "0", 10);
       const lastModified = props?.querySelector("Last-Modified")?.textContent || null;
       return { name, contentLength, lastModified };
-    })
-    // Filter out folder placeholder files such as ".placeholder" if you created them
-    .filter(b => !b.name.endsWith("/.placeholder"));
+    });
+    // NOTE: keep placeholder blobs so folder placeholders are discoverable
   return out;
 }
 
 function discoverFolders() {
   folders = new Set();
+  let hasTopLevelFile = false;
+
   blobs.forEach(b => {
     const idx = b.name.indexOf("/");
-    const folder = idx === -1 ? "" : b.name.substring(0, idx);
-    if (!folder) folders.add("Unsorted");
-    else folders.add(folder);
+    if (idx === -1) {
+      hasTopLevelFile = true;
+    } else {
+      const folder = b.name.substring(0, idx);
+      if (folder) folders.add(folder);
+    }
   });
+
+  if (hasTopLevelFile) folders.add("Unsorted");
+
   // ensure folder names from rules exist
   Object.values(rules).forEach(f => folders.add(f));
 }
@@ -222,7 +230,7 @@ function renderFoldersUI() {
   allBtn.addEventListener("click", () => { selectedFolder = null; renderFoldersUI(); renderFilesView(); });
   foldersListEl.appendChild(allBtn);
 
-  Array.from(folders).sort().forEach(f => {
+  Array.from(folders).sort((a,b)=>a.localeCompare(b)).forEach(f => {
     const item = document.createElement("div");
     item.className = `folder-item ${selectedFolder===f ? "active" : ""}`;
     item.innerHTML = `<span>${f}</span><span class="count">(${countFilesInFolder(f)})</span>`;
@@ -263,16 +271,20 @@ function renderFilesView() {
   const q = (searchInput.value || "").trim().toLowerCase();
   if (q) view = view.filter(b => b.name.toLowerCase().includes(q));
 
-  // decorate with lastAccess for sorting
+  // decorate with lastAccess and displayName for sorting/render
   view = view.map(b => {
     const lastAccess = lastAccessMap[b.name] ? new Date(lastAccessMap[b.name]) : null;
-    return { ...b, lastAccess };
+    const displayName = b.name.includes("/") ? b.name.split("/").slice(1).join("/") : b.name;
+    return { ...b, lastAccess, displayName };
   });
 
   // sort
   const sortBy = sortSelect.value;
   view.sort((a,b) => {
-    if (sortBy === "name") return a.name.localeCompare(b.name);
+    if (sortBy === "name") {
+      // sort by displayName so we ignore folder prefixes
+      return a.displayName.localeCompare(b.displayName, undefined, { sensitivity: "base" });
+    }
     if (sortBy === "size") return (b.contentLength || 0) - (a.contentLength || 0);
     if (sortBy === "created") {
       const da = a.lastModified ? new Date(a.lastModified) : new Date(0);
@@ -291,7 +303,7 @@ function renderFilesView() {
   view.forEach(blob => {
     const row = document.createElement("div");
     row.className = "file-item";
-    const displayName = blob.name.includes("/") ? blob.name.split("/").slice(1).join("/") : blob.name;
+    const displayName = blob.displayName;
     const size = formatFileSize(blob.contentLength);
     const created = blob.lastModified ? new Date(blob.lastModified).toLocaleString() : "Unknown";
     const lastAcc = lastAccessMap[blob.name] ? new Date(lastAccessMap[blob.name]).toLocaleString() : "—";
@@ -352,7 +364,7 @@ function renderFilesView() {
 async function handleFiles(fileList) {
   const files = Array.from(fileList);
   for (const file of files) {
-    // determine target folder based on rules
+    // determine target folder based on rules (no auto-creation of rules)
     const folder = mapFileToFolder(file.name);
     if (folder) folders.add(folder);
     // show temporary UI entry
@@ -442,6 +454,8 @@ async function createFolder(folderName) {
 function renderMessage(msg) { console.log(msg); }
 
 // End of script
+
+
 
 
 
