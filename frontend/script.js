@@ -453,7 +453,14 @@ async function createFolder(folderName) {
 // ========================= UTIL =========================
 function renderMessage(msg) { console.log(msg); }
 
+export {
+  parseContainerSas,
+  extensionOf,
+  formatFileSize
+};
+
 // End of script
+
 
 
 
