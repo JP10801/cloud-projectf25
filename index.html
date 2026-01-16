@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart File Uploader</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>Folders</h2>
+      <div class="folders" id="foldersList"></div>
+
+      <div class="folder-controls">
+        <input id="newFolderName" placeholder="New folder name" />
+        <button id="createFolderBtn">Create Folder</button>
+      </div>
+
+      <hr/>
+
+      <h3>Rules (extensions → folder)</h3>
+      <div id="rulesList" class="rules-list"></div>
+
+      <div class="rules-controls">
+        <input id="ruleExt" placeholder="e.g. .docx" />
+        <input id="ruleFolder" placeholder="Folder name" />
+        <button id="addRuleBtn">Add / Update Rule</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+                <div class="search-sort">
+          <input id="searchInput" placeholder="Search files..." />
+          <select id="sortSelect">
+            <option value="name">Sort by name (A → Z)</option>
+            <option value="size">Sort by size</option>
+            <option value="created">Sort by creation time</option>
+            <option value="lastAccess">Sort by last access</option>
+          </select>
+          <button id="refreshBtn">Refresh</button>
+        </div>
+          
+        <div class="upload-area">
+          <label id="fileUploadLabel" class="file-upload-label">
+            <div class="file-upload-design">
+              <svg viewBox="0 0 640 512" height="1em">
+                <path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z"></path>
+              </svg>
+              <p>Drag and Drop</p>
+              <p>or</p>
+              
+            </div>
+            <input id="file" type="file" multiple />
+          </label>
+        </div>
+
+  
+      </header>
+
+      <section class="content">
+        <div id="breadcrumbs" class="breadcrumbs">All files</div>
+        <div id="filesUploaded" class="files-uploaded"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
+
+
+
+
+
